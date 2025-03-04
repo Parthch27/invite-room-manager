@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 
 const Login = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -27,11 +26,12 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      await login(email, password);
+      // Pass empty string as password since we're not using it anymore
+      await login(email, '');
       toast.success('Login successful');
       navigate('/invitation');
     } catch (error) {
-      toast.error('Invalid credentials. Try using "admin@example.com" or "john@example.com"');
+      toast.error('Invalid email. Try using "admin@example.com" or "john@example.com"');
     } finally {
       setIsLoading(false);
     }
@@ -58,21 +58,6 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Note: Any password will work in this demo
-                </p>
               </div>
               <Button 
                 type="submit" 
