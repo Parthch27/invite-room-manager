@@ -6,6 +6,7 @@ export interface User {
   companyId: string;
   roomNumber: string;
   accessLevel: AccessLevel;
+  designation?: string; // Added designation field
   lastLogin: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -21,6 +22,7 @@ export interface ExcelUser {
   email: string;
   companyId: string;
   roomNumber: string;
+  designation?: string; // Added designation field
   accessLevel?: AccessLevel;
 }
 

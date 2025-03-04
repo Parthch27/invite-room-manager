@@ -9,6 +9,7 @@ const MOCK_USERS: User[] = [
     email: 'admin@example.com',
     companyId: 'ADMIN',
     roomNumber: '001',
+    designation: 'System Administrator',
     accessLevel: AccessLevel.ADMIN,
     lastLogin: new Date(),
     createdAt: new Date(),
@@ -20,6 +21,7 @@ const MOCK_USERS: User[] = [
     email: 'john@example.com',
     companyId: 'COMP001',
     roomNumber: '101',
+    designation: 'Sales Manager',
     accessLevel: AccessLevel.USER,
     lastLogin: new Date(),
     createdAt: new Date(),
@@ -31,6 +33,7 @@ const MOCK_USERS: User[] = [
     email: 'jane@example.com',
     companyId: 'COMP002',
     roomNumber: '102',
+    designation: 'Marketing Specialist',
     accessLevel: AccessLevel.USER,
     lastLogin: null,
     createdAt: new Date(),
@@ -150,6 +153,7 @@ export const processBulkImport = (users: any[]): User[] => {
       existingUser.name = userData.name || existingUser.name;
       existingUser.companyId = userData.companyId || existingUser.companyId;
       existingUser.roomNumber = userData.roomNumber || existingUser.roomNumber;
+      existingUser.designation = userData.designation || existingUser.designation;
       existingUser.updatedAt = new Date();
     } else {
       // Add new user
@@ -159,6 +163,7 @@ export const processBulkImport = (users: any[]): User[] => {
         email: userData.email.toLowerCase(),
         companyId: userData.companyId || '',
         roomNumber: userData.roomNumber || '',
+        designation: userData.designation || '',
         accessLevel: userData.accessLevel || AccessLevel.USER,
         lastLogin: null,
         createdAt: new Date(),

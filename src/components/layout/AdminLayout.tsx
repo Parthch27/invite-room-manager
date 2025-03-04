@@ -7,10 +7,12 @@ import {
   Users, 
   LogOut, 
   Menu,
-  X 
+  X,
+  Clock 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { AccessLevel } from '@/lib/types';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -26,6 +28,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
     logout();
     navigate('/login');
   };
+
+  const isAdmin = user?.accessLevel === AccessLevel.ADMIN;
+  const lastLoginTime = user?.lastLogin 
+    ? new Date(user.lastLogin).toLocaleString() 
+    : 'Never logged in';
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -52,14 +59,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
           
           <div className="flex-1 py-6 px-4 space-y-6 overflow-y-auto">
             <div className="space-y-1">
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start"
-                onClick={() => navigate('/admin')}
-              >
-                <Users className="mr-2 h-5 w-5" />
-                User Management
-              </Button>
+              {isAdmin && (
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/admin')}
+                >
+                  <Users className="mr-2 h-5 w-5" />
+                  User Management
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 className="w-full justify-start"
@@ -80,6 +89,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
                 <p className="text-sm font-medium truncate">{user?.name}</p>
                 <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
               </div>
+            </div>
+            <div className="mb-4 px-2 py-2 bg-muted/50 rounded-md">
+              <div className="flex items-center text-xs text-muted-foreground">
+                <Clock className="h-3.5 w-3.5 mr-1" />
+                <span>Last login:</span>
+              </div>
+              <p className="text-xs font-medium mt-0.5">{lastLoginTime}</p>
             </div>
             <Button 
               variant="outline" 

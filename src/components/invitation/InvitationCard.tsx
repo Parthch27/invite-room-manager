@@ -1,9 +1,8 @@
-
 import React, { useRef, useState } from 'react';
 import { User } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { toPng } from 'html-to-image';
 
@@ -140,6 +139,11 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     }
   };
 
+  const formatDate = (date: Date | null) => {
+    if (!date) return 'Not logged in yet';
+    return new Date(date).toLocaleString();
+  };
+
   return (
     <div className="max-w-md mx-auto">
       <div 
@@ -173,6 +177,12 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               <div className="h-px w-20 bg-white/60 my-1"></div>
               <h2 className="text-2xl font-semibold">{user.name}</h2>
               <p className="text-white/90">{user.email}</p>
+              {user.designation && (
+                <div className="flex items-center space-x-1 text-white/90 bg-white/10 px-3 py-1 rounded-full text-sm mt-1">
+                  <Briefcase className="h-3.5 w-3.5" />
+                  <span>{user.designation}</span>
+                </div>
+              )}
             </div>
 
             {/* Shoot Space Logo Watermark */}
@@ -203,6 +213,13 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                   <p className="text-xs text-blue-700 font-medium">Room Number</p>
                   <p className="font-medium text-blue-900">{user.roomNumber}</p>
                 </div>
+              </div>
+              <div className="mt-2 space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+                <div className="flex items-center">
+                  <Clock className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
+                  <p className="text-xs text-blue-700 font-medium">Last Login</p>
+                </div>
+                <p className="font-medium text-blue-900">{formatDate(user.lastLogin)}</p>
               </div>
             </div>
             

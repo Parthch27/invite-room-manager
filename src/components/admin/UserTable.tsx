@@ -24,6 +24,7 @@ import {
   Edit, 
   Trash,
   PlusCircle, 
+  Clock
 } from 'lucide-react';
 import {
   Dialog,
@@ -65,6 +66,7 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   companyId: z.string().min(1, { message: 'Company ID is required' }),
   roomNumber: z.string().min(1, { message: 'Room number is required' }),
+  designation: z.string().optional(),
   accessLevel: z.enum([AccessLevel.ADMIN, AccessLevel.USER]),
 });
 
@@ -86,6 +88,7 @@ const UserTable: React.FC<UserTableProps> = ({
       email: '',
       companyId: '',
       roomNumber: '',
+      designation: '',
       accessLevel: AccessLevel.USER,
     },
   });
@@ -96,7 +99,8 @@ const UserTable: React.FC<UserTableProps> = ({
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.companyId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.roomNumber.toLowerCase().includes(searchQuery.toLowerCase())
+      user.roomNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (user.designation && user.designation.toLowerCase().includes(searchQuery.toLowerCase()))
     );
     setFilteredUsers(filtered);
   }, [users, searchQuery]);
@@ -182,6 +186,7 @@ const UserTable: React.FC<UserTableProps> = ({
               <TableHead>Email</TableHead>
               <TableHead>Company ID</TableHead>
               <TableHead>Room Number</TableHead>
+              <TableHead>Designation</TableHead>
               <TableHead>Access Level</TableHead>
               <TableHead>Last Login</TableHead>
               <TableHead className="w-[80px]"></TableHead>
@@ -190,7 +195,7 @@ const UserTable: React.FC<UserTableProps> = ({
           <TableBody>
             {filteredUsers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-10 text-muted-foreground">
                   No users found
                 </TableCell>
               </TableRow>
@@ -201,6 +206,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.companyId}</TableCell>
                   <TableCell>{user.roomNumber}</TableCell>
+                  <TableCell>{user.designation || '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs ${
                       user.accessLevel === AccessLevel.ADMIN 
@@ -210,7 +216,12 @@ const UserTable: React.FC<UserTableProps> = ({
                       {user.accessLevel}
                     </span>
                   </TableCell>
-                  <TableCell>{formatDate(user.lastLogin)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <Clock className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                      {formatDate(user.lastLogin)}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -308,6 +319,19 @@ const UserTable: React.FC<UserTableProps> = ({
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="designation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Designation</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter designation" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="accessLevel"
