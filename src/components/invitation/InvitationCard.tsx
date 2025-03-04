@@ -3,10 +3,9 @@ import React, { useRef, useState } from 'react';
 import { User } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, Calendar, Clock, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Download, Share2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { toPng } from 'html-to-image';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface InvitationCardProps {
   user: User;
@@ -145,11 +144,11 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     <div className="max-w-md mx-auto">
       <div 
         ref={cardRef} 
-        className="p-2 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg"
+        className="p-2 bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg"
       >
-        <Card className="overflow-hidden border-amber-200">
-          {/* Header with decorative Udaipur-themed design */}
-          <div className="w-full aspect-video bg-gradient-to-br from-amber-500/90 to-orange-400/50 p-6 text-white relative overflow-hidden">
+        <Card className="overflow-hidden border-sky-200">
+          {/* Header with Shoot Space-themed design */}
+          <div className="w-full aspect-video bg-gradient-to-br from-cyan-500/90 to-blue-600/90 p-6 text-white relative overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10">
               <div className="absolute top-4 left-4 w-20 h-20 border-2 border-white rounded-full"></div>
@@ -175,32 +174,41 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               <h2 className="text-2xl font-semibold">{user.name}</h2>
               <p className="text-white/90">{user.email}</p>
             </div>
+
+            {/* Shoot Space Logo Watermark */}
+            <div className="absolute bottom-3 right-3 opacity-20">
+              <img 
+                src="/lovable-uploads/0e47a353-c46b-49a2-99c4-d13301788575.png" 
+                alt="Shoot Space Logo" 
+                className="w-16 h-auto" 
+              />
+            </div>
           </div>
           
           <div className="p-6 space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-medium text-amber-700 uppercase tracking-wider">Your Details</h3>
-                <div className="text-xs font-medium px-2 py-1 bg-amber-100 text-amber-700 rounded-full">
+                <h3 className="text-sm font-medium text-blue-700 uppercase tracking-wider">Your Details</h3>
+                <div className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
                   April 4-6, 2025
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4 mt-3">
-                <div className="space-y-1 p-3 bg-amber-50 rounded-lg border border-amber-100">
-                  <p className="text-xs text-amber-700 font-medium">Company ID</p>
-                  <p className="font-medium text-amber-900">{user.companyId}</p>
+                <div className="space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+                  <p className="text-xs text-blue-700 font-medium">Company ID</p>
+                  <p className="font-medium text-blue-900">{user.companyId}</p>
                 </div>
-                <div className="space-y-1 p-3 bg-amber-50 rounded-lg border border-amber-100">
-                  <p className="text-xs text-amber-700 font-medium">Room Number</p>
-                  <p className="font-medium text-amber-900">{user.roomNumber}</p>
+                <div className="space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+                  <p className="text-xs text-blue-700 font-medium">Room Number</p>
+                  <p className="font-medium text-blue-900">{user.roomNumber}</p>
                 </div>
               </div>
             </div>
             
             {/* Itinerary Section */}
-            <div className="pt-4 border-t border-amber-200 space-y-3">
-              <h3 className="text-lg font-serif font-semibold text-amber-800">Event Itinerary</h3>
+            <div className="pt-4 border-t border-sky-200 space-y-3">
+              <h3 className="text-lg font-serif font-semibold text-blue-800">Event Itinerary</h3>
               
               {/* Day Navigation */}
               <div className="flex justify-between items-center">
@@ -209,13 +217,13 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                   size="sm" 
                   onClick={handlePrevDay} 
                   disabled={currentDay === 0}
-                  className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                  className="text-blue-700 hover:text-blue-900 hover:bg-blue-100"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   <span className="ml-1">Prev</span>
                 </Button>
                 
-                <div className="font-medium text-amber-800">
+                <div className="font-medium text-blue-800">
                   {itinerary[currentDay].title} • {itinerary[currentDay].date}
                 </div>
                 
@@ -224,7 +232,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                   size="sm" 
                   onClick={handleNextDay} 
                   disabled={currentDay === itinerary.length - 1}
-                  className="text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                  className="text-blue-700 hover:text-blue-900 hover:bg-blue-100"
                 >
                   <span className="mr-1">Next</span>
                   <ChevronRight className="h-4 w-4" />
@@ -232,24 +240,24 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
               
               {/* Schedule */}
-              <div className="space-y-2 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-amber-200 scrollbar-track-amber-50">
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
                 {itinerary[currentDay].schedule.map((item, idx) => (
-                  <div key={idx} className="flex py-2 border-b border-amber-100 last:border-0">
-                    <div className="w-1/3 text-xs font-medium text-amber-700">{item.time}</div>
+                  <div key={idx} className="flex py-2 border-b border-blue-100 last:border-0">
+                    <div className="w-1/3 text-xs font-medium text-blue-700">{item.time}</div>
                     <div className="w-2/3 text-sm">{item.activity}</div>
                   </div>
                 ))}
               </div>
             </div>
             
-            <div className="pt-4 border-t border-amber-200">
+            <div className="pt-4 border-t border-sky-200">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <h3 className="text-sm font-medium text-amber-700">Access Level</h3>
-                  <p className="text-xs text-amber-600 capitalize">{user.accessLevel}</p>
+                  <h3 className="text-sm font-medium text-blue-700">Access Level</h3>
+                  <p className="text-xs text-blue-600 capitalize">{user.accessLevel}</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold font-serif text-amber-800">
+                  <div className="text-3xl font-bold font-serif text-blue-800">
                     #{user.roomNumber}
                   </div>
                 </div>
@@ -262,14 +270,14 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
       <div className="flex justify-between mt-6">
         <Button 
           variant="outline" 
-          className="w-[48%] border-amber-300 hover:bg-amber-100 text-amber-800" 
+          className="w-[48%] border-blue-300 hover:bg-blue-100 text-blue-800" 
           onClick={handleDownload}
         >
           <Download className="mr-2 h-4 w-4" />
           Download
         </Button>
         <Button 
-          className="w-[48%] bg-amber-600 hover:bg-amber-700" 
+          className="w-[48%] bg-blue-600 hover:bg-blue-700" 
           onClick={handleShare}
         >
           <Share2 className="mr-2 h-4 w-4" />
