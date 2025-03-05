@@ -103,7 +103,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onClose }) => {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <Card className="w-full max-w-2xl mx-auto overflow-auto max-h-[90vh]">
       <CardHeader className="relative">
         <Button 
           variant="ghost" 

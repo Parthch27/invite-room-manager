@@ -36,6 +36,8 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     roomNumber: user.roomNumber,
     designation: user.designation,
     state: user.state,
+    mobileNumber: user.mobileNumber,
+    photoUrl: user.photoUrl
   });
 
   const itinerary: DaySchedule[] = [
@@ -158,7 +160,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div 
         ref={cardRef} 
         className="p-2 bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg"
@@ -268,45 +270,25 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
             </div>
             
-            {/* Itinerary Section */}
+            {/* Itinerary Section - Updated to show all days side by side */}
             <div className="pt-4 border-t border-sky-200 space-y-3">
               <h3 className="text-lg font-serif font-semibold text-blue-800">Event Itinerary</h3>
               
-              {/* Day Navigation */}
-              <div className="flex justify-between items-center">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handlePrevDay} 
-                  disabled={currentDay === 0}
-                  className="text-blue-700 hover:text-blue-900 hover:bg-blue-100"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="ml-1">Prev</span>
-                </Button>
-                
-                <div className="font-medium text-blue-800">
-                  {itinerary[currentDay].title} • {itinerary[currentDay].date}
-                </div>
-                
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleNextDay} 
-                  disabled={currentDay === itinerary.length - 1}
-                  className="text-blue-700 hover:text-blue-900 hover:bg-blue-100"
-                >
-                  <span className="mr-1">Next</span>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              {/* Schedule */}
-              <div className="space-y-2 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50">
-                {itinerary[currentDay].schedule.map((item, idx) => (
-                  <div key={idx} className="flex py-2 border-b border-blue-100 last:border-0">
-                    <div className="w-1/3 text-xs font-medium text-blue-700">{item.time}</div>
-                    <div className="w-2/3 text-sm">{item.activity}</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {itinerary.map((day, index) => (
+                  <div key={index} className="border border-blue-100 rounded-lg p-3 bg-blue-50/50">
+                    <div className="font-medium text-blue-800 mb-2 text-center">
+                      {day.title} • {day.date}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      {day.schedule.map((item, idx) => (
+                        <div key={idx} className="flex py-2 border-b border-blue-100 last:border-0">
+                          <div className="w-1/3 text-xs font-medium text-blue-700">{item.time}</div>
+                          <div className="w-2/3 text-xs">{item.activity}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
