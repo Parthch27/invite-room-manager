@@ -1,10 +1,12 @@
+
 import React, { useRef, useState } from 'react';
 import { User } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock } from 'lucide-react';
+import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock, MapPin, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { toPng } from 'html-to-image';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface InvitationCardProps {
   user: User;
@@ -24,6 +26,17 @@ interface DaySchedule {
 const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [currentDay, setCurrentDay] = useState(0);
+
+  // Generate QR code data - JSON string with user details for verification
+  const qrCodeData = JSON.stringify({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    companyId: user.companyId,
+    roomNumber: user.roomNumber,
+    designation: user.designation,
+    state: user.state,
+  });
 
   const itinerary: DaySchedule[] = [
     {
@@ -173,6 +186,19 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
             </div>
             
             <div className="flex flex-col justify-center items-center h-full space-y-3 relative z-10">
+              {/* Profile Photo */}
+              {user.photoUrl && (
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/70 mb-1">
+                  <img 
+                    src={user.photoUrl} 
+                    alt={user.name} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://i.pravatar.cc/150?img=7"; // Fallback image
+                    }}
+                  />
+                </div>
+              )}
               <h1 className="text-3xl font-bold tracking-tight font-serif">Udaipur Retreat</h1>
               <div className="h-px w-20 bg-white/60 my-1"></div>
               <h2 className="text-2xl font-semibold">{user.name}</h2>
@@ -214,6 +240,25 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                   <p className="font-medium text-blue-900">{user.roomNumber}</p>
                 </div>
               </div>
+              
+              {/* Added State and Mobile sections */}
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div className="space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+                  <div className="flex items-center">
+                    <MapPin className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
+                    <p className="text-xs text-blue-700 font-medium">Arrival From</p>
+                  </div>
+                  <p className="font-medium text-blue-900">{user.state || 'Not specified'}</p>
+                </div>
+                <div className="space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+                  <div className="flex items-center">
+                    <Phone className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
+                    <p className="text-xs text-blue-700 font-medium">Mobile</p>
+                  </div>
+                  <p className="font-medium text-blue-900">{user.mobileNumber || 'Not provided'}</p>
+                </div>
+              </div>
+              
               <div className="mt-2 space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
                 <div className="flex items-center">
                   <Clock className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
@@ -264,6 +309,26 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                     <div className="w-2/3 text-sm">{item.activity}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+            
+            {/* QR Code Section */}
+            <div className="pt-4 border-t border-sky-200">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-blue-700">Verification QR</h3>
+                  <p className="text-xs text-blue-600">Scan for verification</p>
+                </div>
+                <div className="bg-white p-2 rounded-lg border border-sky-100">
+                  <QRCodeSVG 
+                    value={qrCodeData}
+                    size={80}
+                    bgColor="#FFFFFF"
+                    fgColor="#0F172A"
+                    level="H"
+                    includeMargin={false}
+                  />
+                </div>
               </div>
             </div>
             

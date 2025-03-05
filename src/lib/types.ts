@@ -6,7 +6,10 @@ export interface User {
   companyId: string;
   roomNumber: string;
   accessLevel: AccessLevel;
-  designation?: string; // Added designation field
+  designation?: string;
+  state?: string; // Added state field
+  mobileNumber?: string; // Added mobile number field
+  photoUrl?: string; // Added photo URL field
   lastLogin: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -22,7 +25,10 @@ export interface ExcelUser {
   email: string;
   companyId: string;
   roomNumber: string;
-  designation?: string; // Added designation field
+  designation?: string;
+  state?: string; // Added state field
+  mobileNumber?: string; // Added mobile number field
+  photoUrl?: string; // Added photo URL field
   accessLevel?: AccessLevel;
 }
 

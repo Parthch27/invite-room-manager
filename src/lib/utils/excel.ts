@@ -27,6 +27,10 @@ export const parseExcelFile = async (file: File): Promise<ExcelUser[]> => {
             email: row.email.toLowerCase(),
             companyId: row.companyId || '',
             roomNumber: row.roomNumber || '',
+            designation: row.designation || '',
+            state: row.state || '', // Added state field
+            mobileNumber: row.mobileNumber || '', // Added mobile number field
+            photoUrl: row.photoUrl || '', // Added photo URL field
             accessLevel: row.accessLevel || AccessLevel.USER
           };
         });
@@ -49,8 +53,26 @@ export const generateExcelTemplate = (): Blob => {
   // Create a workbook with a sample template
   const workbook = XLSX.utils.book_new();
   const data = [
-    { name: 'John Doe', email: 'john@example.com', companyId: 'COMP001', roomNumber: '101' },
-    { name: 'Jane Smith', email: 'jane@example.com', companyId: 'COMP002', roomNumber: '102' }
+    { 
+      name: 'John Doe', 
+      email: 'john@example.com', 
+      companyId: 'COMP001', 
+      roomNumber: '101', 
+      designation: 'Manager',
+      state: 'California',
+      mobileNumber: '1234567890',
+      photoUrl: 'https://example.com/photo1.jpg'
+    },
+    { 
+      name: 'Jane Smith', 
+      email: 'jane@example.com', 
+      companyId: 'COMP002', 
+      roomNumber: '102',
+      designation: 'Developer',
+      state: 'New York',
+      mobileNumber: '9876543210',
+      photoUrl: 'https://example.com/photo2.jpg'
+    }
   ];
   
   const worksheet = XLSX.utils.json_to_sheet(data);

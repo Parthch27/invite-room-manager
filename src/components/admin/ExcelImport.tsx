@@ -152,6 +152,7 @@ const ExcelImport: React.FC<ExcelImportProps> = ({ onImport }) => {
       <CardFooter className="bg-muted/50 text-xs text-muted-foreground">
         <p>
           Excel file must include columns: name, email, companyId, and roomNumber.
+          Optional columns: designation, state, mobileNumber, photoUrl.
           Existing users will be updated based on email.
         </p>
       </CardFooter>

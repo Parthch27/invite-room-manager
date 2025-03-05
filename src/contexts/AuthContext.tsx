@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthContextType, AccessLevel } from '@/lib/types';
 
@@ -10,6 +11,9 @@ const MOCK_USERS: User[] = [
     companyId: 'ADMIN',
     roomNumber: '001',
     designation: 'System Administrator',
+    state: 'Delhi',
+    mobileNumber: '9876543210',
+    photoUrl: 'https://i.pravatar.cc/150?img=1',
     accessLevel: AccessLevel.ADMIN,
     lastLogin: new Date(),
     createdAt: new Date(),
@@ -22,6 +26,9 @@ const MOCK_USERS: User[] = [
     companyId: 'COMP001',
     roomNumber: '101',
     designation: 'Sales Manager',
+    state: 'Maharashtra',
+    mobileNumber: '8765432109',
+    photoUrl: 'https://i.pravatar.cc/150?img=2',
     accessLevel: AccessLevel.USER,
     lastLogin: new Date(),
     createdAt: new Date(),
@@ -34,6 +41,9 @@ const MOCK_USERS: User[] = [
     companyId: 'COMP002',
     roomNumber: '102',
     designation: 'Marketing Specialist',
+    state: 'Karnataka',
+    mobileNumber: '7654321098',
+    photoUrl: 'https://i.pravatar.cc/150?img=3',
     accessLevel: AccessLevel.USER,
     lastLogin: null,
     createdAt: new Date(),
@@ -154,6 +164,9 @@ export const processBulkImport = (users: any[]): User[] => {
       existingUser.companyId = userData.companyId || existingUser.companyId;
       existingUser.roomNumber = userData.roomNumber || existingUser.roomNumber;
       existingUser.designation = userData.designation || existingUser.designation;
+      existingUser.state = userData.state || existingUser.state;
+      existingUser.mobileNumber = userData.mobileNumber || existingUser.mobileNumber;
+      existingUser.photoUrl = userData.photoUrl || existingUser.photoUrl;
       existingUser.updatedAt = new Date();
     } else {
       // Add new user
@@ -164,6 +177,9 @@ export const processBulkImport = (users: any[]): User[] => {
         companyId: userData.companyId || '',
         roomNumber: userData.roomNumber || '',
         designation: userData.designation || '',
+        state: userData.state || '',
+        mobileNumber: userData.mobileNumber || '',
+        photoUrl: userData.photoUrl || '',
         accessLevel: userData.accessLevel || AccessLevel.USER,
         lastLogin: null,
         createdAt: new Date(),
@@ -175,3 +191,4 @@ export const processBulkImport = (users: any[]): User[] => {
   
   return [...MOCK_USERS];
 };
+
