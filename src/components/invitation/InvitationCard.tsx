@@ -1,9 +1,8 @@
-
 import React, { useRef, useState } from 'react';
 import { User } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock, MapPin, Phone, Calendar, CalendarCheck, CalendarClock } from 'lucide-react';
+import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock, MapPin, Phone, Calendar, CalendarCheck, CalendarClock, User as UserIcon, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { toPng } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
@@ -23,11 +22,19 @@ interface DaySchedule {
   schedule: ItineraryItem[];
 }
 
+interface AttendeeInfo {
+  type: 'single' | 'couple' | 'family';
+  attendees: {
+    name: string;
+    phone?: string;
+  }[];
+}
+
 const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [currentDay, setCurrentDay] = useState(0);
+  const [attendeeInfo, setAttendeeInfo] = useState<AttendeeInfo | null>(null);
 
-  // Generate QR code data - JSON string with user details for verification
   const qrCodeData = JSON.stringify({
     id: user.id,
     name: user.name,
@@ -37,7 +44,8 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     designation: user.designation,
     state: user.state,
     mobileNumber: user.mobileNumber,
-    photoUrl: user.photoUrl
+    photoUrl: user.photoUrl,
+    attendeeInfo: attendeeInfo
   });
 
   const itinerary: DaySchedule[] = [
@@ -99,10 +107,8 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
       
       const dataUrl = await toPng(cardRef.current);
       
-      // Create a blob from the data URL
       const blob = await (await fetch(dataUrl)).blob();
       
-      // Check if Web Share API is available
       if (navigator.share) {
         const file = new File([blob], 'invitation.png', { type: 'image/png' });
         await navigator.share({
@@ -112,7 +118,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
         });
         toast.success('Invitation shared successfully!');
       } else {
-        // Fallback for browsers that don't support Web Share API
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -151,7 +156,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     return new Date(date).toLocaleString();
   };
 
-  // Function to get a color for different activity types
   const getActivityColor = (activity: string) => {
     if (activity.includes("Break") || activity.includes("Lunch") || activity.includes("Breakfast")) {
       return "bg-amber-50 border-amber-200 text-amber-800";
@@ -170,6 +174,19 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     }
   };
 
+  const getAttendeeIcon = (type: string | undefined) => {
+    switch (type) {
+      case 'single':
+        return <UserIcon className="h-4 w-4 mr-1.5 text-blue-700" />;
+      case 'couple':
+        return <Users className="h-4 w-4 mr-1.5 text-blue-700" />;
+      case 'family':
+        return <Users className="h-4 w-4 mr-1.5 text-blue-700" />;
+      default:
+        return <UserIcon className="h-4 w-4 mr-1.5 text-blue-700" />;
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       <div 
@@ -177,9 +194,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
         className="p-2 bg-gradient-to-br from-sky-50 to-blue-50 rounded-lg"
       >
         <Card className="overflow-hidden border-sky-200">
-          {/* Header with Shoot Space-themed design */}
           <div className="w-full aspect-video bg-gradient-to-br from-cyan-500/90 to-blue-600/90 p-6 text-white relative overflow-hidden">
-            {/* Decorative elements */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10">
               <div className="absolute top-4 left-4 w-20 h-20 border-2 border-white rounded-full"></div>
               <div className="absolute bottom-4 right-4 w-16 h-16 border-2 border-white rounded-full"></div>
@@ -199,7 +214,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
             </div>
             
             <div className="flex flex-col justify-center items-center h-full space-y-3 relative z-10">
-              {/* Profile Photo - Updated to passport size (3.5cm × 4.5cm proportion) */}
               {user.photoUrl && (
                 <div className="w-24 h-32 rounded-md overflow-hidden border-2 border-white/70 mb-1 shadow-md">
                   <img 
@@ -207,7 +221,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                     alt={user.name} 
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://i.pravatar.cc/150?img=7"; // Fallback image
+                      (e.target as HTMLImageElement).src = "https://i.pravatar.cc/150?img=7";
                     }}
                   />
                 </div>
@@ -224,7 +238,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               )}
             </div>
 
-            {/* Shoot Space Logo Watermark */}
             <div className="absolute bottom-3 right-3 opacity-20">
               <img 
                 src="/lovable-uploads/0e47a353-c46b-49a2-99c4-d13301788575.png" 
@@ -254,7 +267,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                 </div>
               </div>
               
-              {/* Added State and Mobile sections */}
               <div className="grid grid-cols-2 gap-4 mt-3">
                 <div className="space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
                   <div className="flex items-center">
@@ -272,7 +284,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                 </div>
               </div>
               
-              {/* Added Last Login detail */}
               <div className="mt-3 space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
                 <div className="flex items-center">
                   <Clock className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
@@ -280,16 +291,39 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                 </div>
                 <p className="font-medium text-blue-900">{formatDate(user.lastLogin)}</p>
               </div>
+
+              {attendeeInfo && (
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center mb-2">
+                    {getAttendeeIcon(attendeeInfo.type)}
+                    <p className="text-xs text-blue-700 font-medium capitalize">
+                      {attendeeInfo.type === 'single' ? 'Single Attendee' : 
+                       attendeeInfo.type === 'couple' ? 'Couple' : 'Family Members'}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    {attendeeInfo.attendees.map((attendee, index) => (
+                      <div key={index} className="flex flex-col p-2 bg-white/60 rounded border border-blue-100">
+                        <p className="text-sm font-medium text-blue-900">{attendee.name}</p>
+                        {attendee.phone && (
+                          <div className="flex items-center text-xs text-blue-700 mt-1">
+                            <Phone className="h-3 w-3 mr-1" />
+                            {attendee.phone}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             
-            {/* Redesigned Itinerary Section with day selection tabs */}
             <div className="pt-4 border-t border-sky-200 space-y-3">
               <h3 className="text-lg font-serif font-semibold text-blue-800 flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-600" />
                 Event Itinerary
               </h3>
               
-              {/* Day selector tabs */}
               <div className="flex space-x-2 mb-4">
                 {itinerary.map((day, index) => (
                   <button 
@@ -306,7 +340,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                 ))}
               </div>
               
-              {/* Selected day schedule */}
               <div className="border border-blue-200 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50 to-white shadow-sm">
                 <div className="bg-blue-600 text-white p-3 flex items-center justify-between">
                   <div className="flex items-center">
@@ -318,7 +351,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                   </div>
                 </div>
                 
-                <div className="p-3 space-y-2 max-h-[400px] overflow-y-auto">
+                <div className="p-3 space-y-2">
                   {itinerary[currentDay].schedule.map((item, idx) => (
                     <div 
                       key={idx} 
@@ -335,7 +368,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
             </div>
             
-            {/* QR Code Section */}
             <div className="pt-4 border-t border-sky-200">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
