@@ -93,14 +93,6 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     }
   ];
 
-  const handlePrevDay = () => {
-    setCurrentDay(prev => (prev > 0 ? prev - 1 : prev));
-  };
-
-  const handleNextDay = () => {
-    setCurrentDay(prev => (prev < itinerary.length - 1 ? prev + 1 : prev));
-  };
-
   const handleShare = async () => {
     try {
       if (!cardRef.current) return;
@@ -280,7 +272,8 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
                 </div>
               </div>
               
-              <div className="mt-2 space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
+              {/* Added Last Login detail */}
+              <div className="mt-3 space-y-1 p-3 bg-sky-50 rounded-lg border border-sky-100">
                 <div className="flex items-center">
                   <Clock className="h-3.5 w-3.5 text-blue-700 mr-1.5" />
                   <p className="text-xs text-blue-700 font-medium">Last Login</p>
@@ -289,46 +282,60 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
             </div>
             
-            {/* Redesigned Itinerary Section with improved styling */}
+            {/* Redesigned Itinerary Section with day selection tabs */}
             <div className="pt-4 border-t border-sky-200 space-y-3">
               <h3 className="text-lg font-serif font-semibold text-blue-800 flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-600" />
                 Event Itinerary
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Day selector tabs */}
+              <div className="flex space-x-2 mb-4">
                 {itinerary.map((day, index) => (
-                  <div key={index} className="border border-blue-200 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50 to-white shadow-sm">
-                    <div className="bg-blue-600 text-white p-3 flex items-center justify-between">
-                      <div className="flex items-center">
-                        <CalendarCheck className="h-4 w-4 mr-2" />
-                        <span className="font-medium">{day.title}</span>
-                      </div>
-                      <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                        {day.date}
-                      </div>
-                    </div>
-                    
-                    <div className="p-3 space-y-2">
-                      {day.schedule.map((item, idx) => (
-                        <div 
-                          key={idx} 
-                          className={`flex p-2 rounded-lg border text-xs ${getActivityColor(item.activity)}`}
-                        >
-                          <div className="w-[35%] font-medium flex items-start">
-                            <Clock className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
-                            <span>{item.time}</span>
-                          </div>
-                          <div className="w-[65%]">{item.activity}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <button 
+                    key={index}
+                    onClick={() => setCurrentDay(index)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      currentDay === index 
+                        ? 'bg-blue-600 text-white shadow-sm' 
+                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    }`}
+                  >
+                    {day.title}
+                  </button>
                 ))}
+              </div>
+              
+              {/* Selected day schedule */}
+              <div className="border border-blue-200 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50 to-white shadow-sm">
+                <div className="bg-blue-600 text-white p-3 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <CalendarCheck className="h-4 w-4 mr-2" />
+                    <span className="font-medium">{itinerary[currentDay].title}</span>
+                  </div>
+                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                    {itinerary[currentDay].date}
+                  </div>
+                </div>
+                
+                <div className="p-3 space-y-2 max-h-[400px] overflow-y-auto">
+                  {itinerary[currentDay].schedule.map((item, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`flex p-2 rounded-lg border text-xs ${getActivityColor(item.activity)}`}
+                    >
+                      <div className="w-[35%] font-medium flex items-start">
+                        <Clock className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                        <span>{item.time}</span>
+                      </div>
+                      <div className="w-[65%]">{item.activity}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             
-            {/* QR Code Section - Kept the same */}
+            {/* QR Code Section */}
             <div className="pt-4 border-t border-sky-200">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
