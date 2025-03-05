@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { User } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock, MapPin, Phone } from 'lucide-react';
+import { Download, Share2, ChevronRight, ChevronLeft, Briefcase, Clock, MapPin, Phone, Calendar, CalendarCheck, CalendarClock } from 'lucide-react';
 import { toast } from 'sonner';
 import { toPng } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
@@ -159,6 +159,25 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
     return new Date(date).toLocaleString();
   };
 
+  // Function to get a color for different activity types
+  const getActivityColor = (activity: string) => {
+    if (activity.includes("Break") || activity.includes("Lunch") || activity.includes("Breakfast")) {
+      return "bg-amber-50 border-amber-200 text-amber-800";
+    } else if (activity.includes("DJ") || activity.includes("Dinner")) {
+      return "bg-purple-50 border-purple-200 text-purple-800";
+    } else if (activity.includes("Speech") || activity.includes("Ceremony") || activity.includes("Address")) {
+      return "bg-blue-50 border-blue-200 text-blue-800";
+    } else if (activity.includes("Assemble") || activity.includes("Get Ready") || activity.includes("Go to")) {
+      return "bg-emerald-50 border-emerald-200 text-emerald-800";
+    } else if (activity.includes("Arrival") || activity.includes("Departure") || activity.includes("Entry")) {
+      return "bg-rose-50 border-rose-200 text-rose-800";
+    } else if (activity.includes("Games") || activity.includes("Activities")) {
+      return "bg-cyan-50 border-cyan-200 text-cyan-800";
+    } else {
+      return "bg-indigo-50 border-indigo-200 text-indigo-800";
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       <div 
@@ -188,9 +207,9 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
             </div>
             
             <div className="flex flex-col justify-center items-center h-full space-y-3 relative z-10">
-              {/* Profile Photo */}
+              {/* Profile Photo - Updated to passport size (3.5cm × 4.5cm proportion) */}
               {user.photoUrl && (
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/70 mb-1">
+                <div className="w-24 h-32 rounded-md overflow-hidden border-2 border-white/70 mb-1 shadow-md">
                   <img 
                     src={user.photoUrl} 
                     alt={user.name} 
@@ -270,22 +289,37 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
             </div>
             
-            {/* Itinerary Section - Updated to show all days side by side */}
+            {/* Redesigned Itinerary Section with improved styling */}
             <div className="pt-4 border-t border-sky-200 space-y-3">
-              <h3 className="text-lg font-serif font-semibold text-blue-800">Event Itinerary</h3>
+              <h3 className="text-lg font-serif font-semibold text-blue-800 flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Event Itinerary
+              </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {itinerary.map((day, index) => (
-                  <div key={index} className="border border-blue-100 rounded-lg p-3 bg-blue-50/50">
-                    <div className="font-medium text-blue-800 mb-2 text-center">
-                      {day.title} • {day.date}
+                  <div key={index} className="border border-blue-200 rounded-xl overflow-hidden bg-gradient-to-b from-blue-50 to-white shadow-sm">
+                    <div className="bg-blue-600 text-white p-3 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <CalendarCheck className="h-4 w-4 mr-2" />
+                        <span className="font-medium">{day.title}</span>
+                      </div>
+                      <div className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                        {day.date}
+                      </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="p-3 space-y-2">
                       {day.schedule.map((item, idx) => (
-                        <div key={idx} className="flex py-2 border-b border-blue-100 last:border-0">
-                          <div className="w-1/3 text-xs font-medium text-blue-700">{item.time}</div>
-                          <div className="w-2/3 text-xs">{item.activity}</div>
+                        <div 
+                          key={idx} 
+                          className={`flex p-2 rounded-lg border text-xs ${getActivityColor(item.activity)}`}
+                        >
+                          <div className="w-[35%] font-medium flex items-start">
+                            <Clock className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                            <span>{item.time}</span>
+                          </div>
+                          <div className="w-[65%]">{item.activity}</div>
                         </div>
                       ))}
                     </div>
@@ -294,7 +328,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ user }) => {
               </div>
             </div>
             
-            {/* QR Code Section */}
+            {/* QR Code Section - Kept the same */}
             <div className="pt-4 border-t border-sky-200">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
